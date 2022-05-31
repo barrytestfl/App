@@ -2,7 +2,7 @@
 
 <head>
 <style id="sty">
-    table.print-friendly tr td, table.print-friendly tr th {
+    #printArea table.print-friendly tr td, #printArea table.print-friendly tr th {
         page-break-inside: avoid;
     }
     * {
@@ -247,11 +247,7 @@
         max-height: 40%;
     }
  
-    #phone1, #customerID, #date, #wodate, #busName, #rep, #email, #address, #city, #state, #zip, #phone, #contact, #instalTime, #qty {
-        width: 80%;
-        max-width: 90%;
-        
-    }
+    
     #caption2 {
         width: 100%;
         font-size: 22px;
@@ -387,6 +383,7 @@
         height: 80px;
         margin: auto;
         border: 3px solid #73AD21;
+		overflow: hidden;
     }
 
     .declair {
@@ -410,16 +407,7 @@
         text-align: left;
     }
 
-    label {
-        font-size: 12px;
-    }
-
-    textarea {
-        width: 90%;
-        height: 70%;
-        max-width: 90%;
-        max-height: 70%;
-    }
+   
 
     .nc {
         width: 45%;
@@ -435,7 +423,7 @@
         max-height: 30%;
     }
 
-    table {
+   #printArea table {
         font-family: arial, sans-serif;
         font-size: 13.0px;
         border-collapse: collapse;
@@ -444,7 +432,7 @@
         break-inside: avoid;
     }
 
-    td, th {
+    #printArea td, #printArea th {
         border: 1px solid #ebbf49;
         border-bottom: 2px solid #ebbf49;
         text-align: top left;
@@ -452,7 +440,7 @@
         break-inside: avoid;
     }
 
-    tr:nth-child(even) {
+    #printArea tr:nth-child(even) {
         background-color: #fadb87;
     }
 
@@ -574,7 +562,7 @@
 
     <!-- Angular Material Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>    
     <!-- Angular Material style sheet -->
     <link rel="stylesheet"         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
        <style>
@@ -591,14 +579,9 @@ md-input-container{width:100%!important}
  <input type='file' id="file" class="navbutton1" accept='text/plain' onchange="angular.element(this).scope().openFile(event)" hidden > 
   <div id='output' ng-model="woToLoad" hidden></div>             
     <div layout="column" class="relative" layout-fill role="main">
-       
-
         <md-toolbar ng-show="!showSearch">
             <div class="md-toolbar-tools">
-
-                <h5>
-                    ORANGE ENERGIZING SOLUTIONS
-                </h5>
+				<h5>  ORANGE ENERGIZING SOLUTIONS </h5>
                 <span flex></span>
  
 <md-menu>
@@ -627,20 +610,26 @@ md-input-container{width:100%!important}
         </md-menu-item>
         
         <md-menu-divider></md-menu-divider>
-         <md-menu-item>		
-          <md-button onclick="printDiv()">
+         <md-menu-item   >		
+          <md-button ng-click="printPage()" ng-disabled="data.selectedIndex==0" >
             <md-icon icon="open-file">  <ng-md-icon icon="print"></ng-md-icon> </md-icon>
            Print
           </md-button>
         </md-menu-item>
+		 <md-menu-divider></md-menu-divider>
+         <md-menu-item >		
+          <md-button ng-click="SignInSVG()"  ng-disabled="data.selectedIndex==0">
+            <md-icon icon="open-file">  <ng-md-icon icon="edit"></ng-md-icon> </md-icon>
+					Get Signature
+          </md-button>
+        </md-menu-item>
+		
+		
+		
       </md-menu-content>
 </md-menu>
 
-
-
-
-
-            </div>
+				</div>
             <md-tabs md-stretch-tabs class="md-primary" md-selected="data.selectedIndex">
                 <md-tab id="tab1" aria-controls="tab1-content">
                     INVOICE
@@ -663,13 +652,13 @@ md-input-container{width:100%!important}
                                 <h2>Checkout</h2>
                                 <div class="layout-sm-column layout-row" layout-xs="column" layout="row" layout-padding>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Full Name" aria-label="primary" ng-model="userName" />
+                                        <input placeholder="Full Name" ng-change="ChangeuserName(userName)"  type="text" name="userName" id="userName" aria-label="primary" ng-model="userName" />
                                     </md-input-container>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Phone" aria-label="primary" ng-model="userPhone" />
+                                        <input placeholder="Phone" type="number"  ng-change="ChangeuserPhone(userPhone)"  aria-label="primary" ng-model="userPhone" />
                                     </md-input-container>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Email" aria-label="primary" ng-model="userEmail" />
+                                        <input placeholder="Email" type="email"  ng-change="ChangeuserEmail(userEmail)" aria-label="primary" ng-model="userEmail" />
                                     </md-input-container>
 
                                 </div>
@@ -684,15 +673,7 @@ md-input-container{width:100%!important}
                                                         ng-change="makeFileName()" name="busName" required />
                                                 </md-input-container>
                                                 <md-datepicker   flex-gt-sm="100" flex-gt-md="100"     ng-model="f_info.fv_date" id="wodate" name="fv_date" input-aria-labelledby="datepicker-header" md-placeholder="Date" input-aria-describedby="datepicker-description"  ></md-datepicker>
-                                               <div  >
-											   <input type="text" id="repName" name="repName" ng-model="userName"  hidden />
-                                                 <input type="text" id="repPhone" name="repPhone"  placeholder="Phone" hidden /><br />
-                                                <input type="text" id="repEmail" name="repEmail"    placeholder="Email" hidden />
-                                                 
-                                                <!-- <p> Sales Rep : {{ userName }}</p> -->
-                                                <!-- <p>Rep phone: {{ userPhone }} </p> -->
-                                                <!-- <p>Rep Email: {{ userEmail }} </p> -->
-                                                 </div>
+                                               
                                             </div>
                                           <div    layout-xs="column" layout="column"  >
                                                 <md-input-container  class="md-block" flex-gt-sm="50" flex-gt-md="100">
@@ -1014,7 +995,7 @@ md-input-container{width:100%!important}
         <md-card flex-gt-sm="90" flex-gt-md="80">
             <md-card-content>
                
- <div  id="printArea" >
+ <div  id="printArea" ng-init="InitPage()" >
             <div id="caption1">
                 <div style="position:absolute;left:85%;top:2%">
 
@@ -1035,13 +1016,13 @@ md-input-container{width:100%!important}
 
                 </div>
                 <div class="customer-info-item">
-                    Date:  {{ f_info.fv_date }}
+                    Date:  {{ f_info.fv_date}}
                     <br />
                 </div>
                 <div class="customer-info-item">
-                    Rep:  {{ userName }}<br />
-                    Phone:  {{ userPhone }}<br />
-                    Email:  {{ userEmail }}
+                    Rep:  {{userName}}  <br />
+                    Phone:  {{userPhone}}<br />
+                    Email:  {{userEmail}}
                 </div>
 
 
@@ -1271,8 +1252,14 @@ md-input-container{width:100%!important}
             <h4 style="margin:1px;">Parts and labor included.</h4>
             <br />
             <div class="customer-info-item">
-                <div id="getSign"><button onclick="getSign()">Get Signature</button></div>
-                <div class="ex1" id="signDiv"  ></div>
+               
+                <div class="ex1" id="signDiv" ng-init="SignInSVG()"  >
+				 <div id="signature-pad" class="signature-pad">
+						<div class="signature-pad--body">
+						  <canvas  style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas>
+						</div>
+				</div>
+				</div>
 
             </div>
             <div id='dec'  >
@@ -1295,127 +1282,52 @@ md-input-container{width:100%!important}
     </ui-view>
     </md-content>
     </div>
-    <script>
+    <script> 
         var Xtext = {};
-        //------------------
-        var getSign=function() {
-
-           // document.getElementById("signDiv").hidden = false;
-
-            document.getElementById("getSign").hidden = true;
-
-            var offsets = document.getElementById('signDiv').getBoundingClientRect();
-            var top = offsets.top;
-            var left = offsets.left;
-
-             
-            var canvas = document.createElement('canvas');
-            var context = canvas.getContext('2d');
- 
-            document.getElementById("signDiv").appendChild(canvas);
- 
-            document.body.style.margin = 0;
-             
-            ctx = canvas.getContext('2d');
-            resize();
-
-            
-            var pos = { x: 0, y: 0 };
-            var AmTouch = false;
-            var coin;
-
-            window.addEventListener('resize', resize);
-            document.addEventListener('mousemove', draw);
-            document.addEventListener('mousedown', setPosition);
-            document.addEventListener('mouseenter', setPosition);
-
-            document.addEventListener('touchmove', draw);
-            document.addEventListener('touchstart', setPosition);
-            document.addEventListener('touchend', setPosition); 
-
-            document.addEventListener('dblclick', cleanSign);
-          
-
-            function setPosition(e) {
-                
-                pos.x = e.clientX;
-                pos.y = e.clientY;
-            }
-            function cleanSign() {
-                console.log("in clear");
-                ctx.fillStyle = "white";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } 
-            function resize() {
-                ctx.canvas.width = document.getElementById("signDiv").clientWidth;
-                ctx.canvas.height = document.getElementById("signDiv").clientHeight;
-
-                //ctx.canvas.width = window.innerWidth;
-                //ctx.canvas.height = window.innerHeight;
-            }
-
-            function draw(e) {
-                // mouse left button must be pressed
-                if (e.buttons !== 1) return;
-
-                ctx.beginPath(); // begin
-
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = 'blue';
-
-                ctx.moveTo(pos.x - left, pos.y - top); // from
-                setPosition(e);
-                ctx.lineTo(pos.x - left, pos.y - top); // to
-
-                ctx.stroke(); // draw it!
-            }
-        };
-	 
-function printDiv() {
-        var divToPrint = document.getElementById('printArea'); 
-if	(!divToPrint){return};
-         newWin= window.open(self.location.href);
-    
-       newWin.document.write("\<!DOCTYPE html\>\<html lang='es'\>\<head\>\<meta charset='utf-8'\/\>\<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'\>\<meta name='HandheldFriendly' content='true'\/\>");
-  
-        newWin.document.write("<style type='text/css'>@media print{.dataTables_info,.dataTables_filter{height:0!important;width:0!important;margin:0!important;padding:0!important;min-height:0!important;line-height:0!important;overflow:visible!important;visibility:hidden}");
-    
-        newWin.document.write("body {z-index:100!important;visibility:visible!important;position:relative!important;display:block!important;background-color:lightgray!important;height:297mm!important;width:211mm!important;position:relative!important;padding:0;top:0!important;left:0!important;margin:0!important;orphans:0!important;widows:0!important;overflow:visible!important;page-break-after:always}");
-
-
-var stv=document.getElementById('sty').innerText;
-    newWin.document.write(stv); 
-        newWin.document.write("body h1{font-size:1em; font-family:Verdana;} a.marked{color:black; text-decoration:none} .pagebreak { page-break-before: always; } ");
-        newWin.document.write("@page{size:A4; margin:2em; orphans:0!important;widows:0!important}}</style>\<\/head>\<body>");
-        newWin.document.write(divToPrint.innerHTML);
-        newWin.document.write("</body></html>");
-        newWin.focus();
-        newWin.print();
-    newWin.close();
-    }
- 
+        //------------------ 
         //---------------------
         var app = angular.module('StarterApp', ['ngMaterial', 'ngMdIcons', 'md.data.table']);
 
         app.controller('AppCtrl', ['$scope','$rootScope',  '$mdBottomSheet', '$mdSidenav', '$mdDialog', function ($scope, $mdBottomSheet, $mdSidenav, $mdDialog) {
-             
+         	  function resizeCanvas() {
+				  
+				  var wrapper = document.getElementById("signature-pad");
+				  var canvas = wrapper.querySelector("canvas");
+				  var ratio =  Math.max(window.devicePixelRatio || 1, 1); 
+				  canvas.width = canvas.offsetWidth * ratio;
+				  canvas.height = canvas.offsetHeight * ratio;
+				  canvas.getContext("2d").scale(ratio, ratio);
+				  var signaturePad = new SignaturePad(canvas, {
+							backgroundColor: 'rgb(255, 255, 255)'
+							});
+				  signaturePad.clear();
+				}
+				 $scope.SignInSVG=function(){
+				 
+						var wrapper = document.getElementById("signature-pad");
+						var svgdiv = document.getElementById("signDiv");
+						var canvas = wrapper.querySelector("canvas");
+						var signaturePad = new SignaturePad(canvas, {
+						backgroundColor: 'rgb(255, 255, 255)'
+						});
+						window.onresize = resizeCanvas;
+						resizeCanvas();
+						svgdiv.addEventListener("dblclick", function (event) {
+								  signaturePad.clear();
+								});
+				} 
+				 
 			$scope.openMenu = function($mdMenu, ev) {
 				  originatorEv = ev;
 				  $mdMenu.open(ev);
 				};
 
-		   $scope.selected = [];
- $scope.data = {
-      selectedIndex: 0,
-      secondLocked:  true,
-      
-    };
+   		    $scope.selected = [];
+			$scope.data = {
+			selectedIndex: 0,
+			secondLocked:  true};
             $scope.options = {
-                //autoSelect: true,
                 boundaryLinks: true,
-                //largeEditDialog: true,
-                //pageSelector: true,
                 rowSelection: true
             };
 
@@ -1424,23 +1336,24 @@ var stv=document.getElementById('sty').innerText;
                 limit: 5,
                 page: 1
             };
-      $scope.toggleSidenav = function (menuId) {
+			$scope.toggleSidenav = function (menuId) {
                 $mdSidenav(menuId).toggle();
             };
 			$scope.printPage=function(){ 
-					$scope.showSearch=true;
-					window.print();
-					//$scope.showSearch=false;
+					$scope.showSearch=true; 
+					setTimeout(function(){ window.print();$scope.showSearch=false;},100);
+					
+					
 			}
 			$scope.showSearch=false;
 			$scope.Open=function(){ 
-				document.getElementById('file').click()	 
+				document.getElementById('file').click();	 
 			}
 			
-            $scope.pageToShow = "addwo";
-            $scope.userName = "";
-            $scope.userPhone = "";
-            $scope.userEmail = "";
+            $scope.pageToShow = "";
+				$scope.userName = "";
+				$scope.userPhone = "";
+				$scope.userEmail = "";
             $scope.numOfLines = 1;
             $scope.woToLoad = [];
             $scope.filenames = [];
@@ -1448,7 +1361,12 @@ var stv=document.getElementById('sty').innerText;
             $scope.totalWOcost = 0;
             $scope.lightOpt = ['Troffer', 'Panel', 'Canopy', 'Wrap', 'Strip', 'High-Bay', 'Shoe-Box', 'Flood', 'Wall-Pack', 'Cooler', 'Barn', 'Screw-In', 'Flash-Mount'];
 
+$scope.ChangeuserName  = function(v){$scope.userName = v;   };
+$scope.ChangeuserPhone = function(v){$scope.userPhone = v;   };
+$scope.ChangeuserEmail = function(v){$scope.userEmail = v;   };
+
             $scope.initFormCustomer = function () {
+			 
                 b_name = "";
                 f_date = "";
                 b_address = "";
@@ -1698,7 +1616,7 @@ var stv=document.getElementById('sty').innerText;
                     }
                     return 0;
                 }
-  
+					
                     $scope.makeFileName();
                     $scope.totalWOcost = 0;
                      
@@ -1742,8 +1660,7 @@ var stv=document.getElementById('sty').innerText;
                 $scope.numOfLines = 1; 
             };
 
-            $scope.removeLine = function (index) {
-                console.log(" remove line , index is " + index)
+            $scope.removeLine = function (index) { 
                 if ($scope.lineArr.length > 1) {
                     $scope.lineArr.splice(index, 1);
                 }
@@ -1762,7 +1679,7 @@ var stv=document.getElementById('sty').innerText;
                     t = A[1] || "text/plain";
                 text = "";
                 text = JSON.stringify($scope.f_info);
-                console.log('before if, text is ' + text);
+              
                 if (text != "[]") {
                     console.log('text is ' + text);
                 }
@@ -1771,15 +1688,9 @@ var stv=document.getElementById('sty').innerText;
                     text = JSON.stringify($scope.f_info);
                     console.log('text is empty ' + text);
                 }
-                console.log('name is: ' + $scope.f_info)
-                // adding customer info to text for the file
-                //for (const property in f_info) {
-                //    text += (`${property}: ${f_info[property]}`);
-                //    text += " ; ";
-                //};
+                 
                 text += "\n";
-                // adding WO lines to text for the file
-
+                 
                 temp = JSON.stringify($scope.lineArr);
                 strData = text + temp;
                 $scope.woToLoad = text + temp;
@@ -1790,13 +1701,12 @@ var stv=document.getElementById('sty').innerText;
                 if (window.MSBlobBuilder) { // IE10
                     var bb = new MSBlobBuilder();
                     bb.append(strData);
-                    //return navigator.msSaveBlob(bb, strFileName);
-                    return navigator.msSaveBlob(bb, $scope.setFN);
-                } /* end if(window.MSBlobBuilder) */
+                     return navigator.msSaveBlob(bb, $scope.setFN);
+                }  
 
 
 
-                if ('download' in a) { //FF20, CH19
+                if ('download' in a) { 
                     a.setAttribute("download", n);
                     a.innerHTML = "downloading...";
                     D.body.appendChild(a);
@@ -1807,11 +1717,7 @@ var stv=document.getElementById('sty').innerText;
                         D.body.removeChild(a);
                     }, 66);
                     return true;
-                }; /* end if('download' in a) */
-
-
-
-                //do iframe dataURL download: (older W3)
+                };  
                 var f = D.createElement("iframe");
                 D.body.appendChild(f);
                 f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
@@ -1819,12 +1725,11 @@ var stv=document.getElementById('sty').innerText;
                     D.body.removeChild(f);
                 }, 333);
                 return true;
-            }; // end of writing files function
+            };  
 
             $scope.getLastLineNum = function () {
                 var lNum = 1;
                 for (line in $scope.lineArr) {
-                    //console.log("line " + line + "  " + $scope.lineArr[line].name + ' ' + $scope.lineArr[line].vuPrice * $scope.lineArr[line].idqty)
                     temp = $scope.lineArr[line].typeChs;
                     numb = temp.match(/\d/g);
                     numb = parseInt(numb.join(""));
@@ -1833,42 +1738,31 @@ var stv=document.getElementById('sty').innerText;
                     }
                 };
                 $scope.numOfLines = parseInt(lNum) + 1;
-                console.log("numOfLine " + $scope.numOfLines)
-
+                 
             }
            
             $scope.makeFileName = function () {
                 bus_name = '';
                 rep_name = 'OES_';
-                /*                if (document.getElementById('busName')) {
-                                    bus_name = document.getElementById('busName').value;
-                                } else {
-                                    console.log('Bus_name ' + document.getElementById('busName').value);
-                                }*/
-                if ($scope.f_info.bv_name) {
+                
+				if ($scope.f_info.bv_name) {
                     bus_name = $scope.f_info.bv_name;
                 } else {
-                    console.log('f_info.bv_name ' + $scope.f_info.bv_name);
-                    adres = "";
-
+                     adres = "";
                 };
                 if ($scope.f_info.bv_address) {
                     adres = $scope.f_info.bv_address;
                 } else {
-                    console.log('f_info.bv_address ' + $scope.f_info.bv_address);
-                    adres = "";
-
+                     adres = "";
                 };
 
                 if ($scope.userName) {
-                    rep_name = $scope.userName; // document.getElementById('userName').value;
+                    rep_name = $scope.userName;  
                 }
 
 
                 if (rep_name && bus_name) {
                     bus_name = bus_name.replace(/\s/g, '_').toLowerCase();
-                    //bus_name = bus_name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
-                    //bus_name = bus_name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
                     names = rep_name.split(' '),
                         initials = names[0].substring(0, 1).toUpperCase();
 
@@ -1901,9 +1795,7 @@ var stv=document.getElementById('sty').innerText;
 								 $scope.data = {
 									  selectedIndex: 1,
 									  secondLocked:  true,									  
-									};
-									 
-									
+									};									 
 				}
             $scope.openFile = function (event) {
                 var input = event.target;
@@ -1912,7 +1804,7 @@ var stv=document.getElementById('sty').innerText;
                     var text = reader.result;                     
                     Xtext = JSON.parse('{"f_info":' + text.replace('}', '},"lineArr":') + '}');				
 					FillForm(Xtext);
-					console.log(Xtext)
+				 
                 };
                 reader.readAsText(input.files[0]);
             };
@@ -1923,10 +1815,7 @@ var stv=document.getElementById('sty').innerText;
         app.config(function ($mdThemingProvider,$mdGestureProvider) {
 		 $mdGestureProvider.skipClickHijack();
          $mdGestureProvider.setMaxClickDistance(12);
-  
-  
-  
-            var customBlueMap = $mdThemingProvider.extendPalette('light-blue', {
+         var customBlueMap = $mdThemingProvider.extendPalette('light-blue', {
                 'contrastDefaultColor': 'light',
                 'contrastDarkColors': ['50'],
                 '50': 'ffffff'
