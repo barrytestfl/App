@@ -2,6 +2,13 @@
 
 <head>
 <style id="sty">
+	
+	@media print {
+    md-toolbar {
+      display:none;
+    }
+}
+	
     #printArea table.print-friendly tr td, #printArea table.print-friendly tr th {
         page-break-inside: avoid;
     }
