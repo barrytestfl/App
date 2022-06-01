@@ -1351,6 +1351,7 @@ md-input-container{width:100%!important}
 			$scope.printPage=function(){ 
 					$scope.showSearch=true; 
 					//setTimeout(function(){ window.print();$scope.showSearch=false;},100);
+	window.jsPDF = window.jspdf.jsPDF;			
    var HTML_Width = $("#printArea").width();
     var HTML_Height = $("#printArea").height();
     var top_left_margin = 15;
