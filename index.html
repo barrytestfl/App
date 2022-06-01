@@ -3,11 +3,7 @@
 <head>
 <style id="sty">
 	
-	@media print {
-    md-toolbar {
-      display:none;
-    }
-}
+
 	
     #printArea table.print-friendly tr td, #printArea table.print-friendly tr th {
         page-break-inside: avoid;
@@ -579,6 +575,8 @@
 }
 md-input-container{width:100%!important}
 	   </style>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body layout="row" ng-app="StarterApp" ng-cloak ng-controller="AppCtrl">
@@ -1348,8 +1346,12 @@ md-input-container{width:100%!important}
             };
 			$scope.printPage=function(){ 
 					$scope.showSearch=true; 
-					setTimeout(function(){ window.print();$scope.showSearch=false;},100);
-					
+					//setTimeout(function(){ window.print();$scope.showSearch=false;},100);
+ var printDoc = new jsPDF();
+    printDoc.fromHTML($('#printArea').get(0), 10, 10, {'width': 180});
+    printDoc.autoPrint();
+    printDoc.output("dataurlnewwindow");
+				
 					
 			}
 			$scope.showSearch=false;
