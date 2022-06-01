@@ -549,6 +549,10 @@
 </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.60/jspdf.min.js"></script>
+ 
+	
     <!-- Angular Material requires Angular.js Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
@@ -569,8 +573,7 @@
     <!-- Angular Material style sheet -->
     <link rel="stylesheet"         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
 	
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.0-beta.2/pdfmake.min.js" integrity="sha512-k9XKlDENMt9s19gEl+L6F/r+OWAR4pesbUd8/SKQVMt3b1ECqsRXgLA9XnJoq4J9mjlxLQabfTxf3268lzpFUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	 <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+	
 	
        <style>
 	   .md-icon-button+.md-datepicker-input-container {
@@ -1351,7 +1354,17 @@ md-input-container{width:100%!important}
 			$scope.printPage=function(){ 
 					//$scope.showSearch=true; 
 					//setTimeout(function(){ window.print();$scope.showSearch=false;},100);
-	
+				 var doc = new jsPDF();
+            var specialElementHandlers = {
+                '._md _md-toolbar-transitions': function (element, renderer) {
+                    return true;
+                }
+            };
+            doc.fromHTML($('#printArea').html(), 15, 15, {
+                'width': 170,
+                'elementHandlers': specialElementHandlers
+            });
+            doc.save($scope.f_info.bv_name+'print.pdf');
 					
 			}
 			$scope.showSearch=false;
