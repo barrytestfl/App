@@ -1,8 +1,8 @@
 <html lang="en">
 
 <head>
-<style id="sty">
-    table.print-friendly tr td, table.print-friendly tr th {
+<style>
+    #printArea table.print-friendly tr td, #printArea table.print-friendly tr th {
         page-break-inside: avoid;
     }
     * {
@@ -225,20 +225,7 @@
         display: block;
     }
 
-    label {
-        font-size: 12px;
-    }
-
-    body {
-        padding: 1rem;
-    }
-
-    textarea {
-        width: 90%;
-        height: 60%;
-        max-width: 90%;
-        max-height: 90%;
-    }
+    
 
     .nc {
         width: 45%;
@@ -410,17 +397,7 @@
         text-align: left;
     }
 
-    label {
-        font-size: 12px;
-    }
-
-    textarea {
-        width: 90%;
-        height: 70%;
-        max-width: 90%;
-        max-height: 70%;
-    }
-
+    
     .nc {
         width: 45%;
         height: 30%;
@@ -435,7 +412,7 @@
         max-height: 30%;
     }
 
-    table {
+   #printArea table {
         font-family: arial, sans-serif;
         font-size: 13.0px;
         border-collapse: collapse;
@@ -444,7 +421,7 @@
         break-inside: avoid;
     }
 
-    td, th {
+    #printArea td, #printArea th {
         border: 1px solid #ebbf49;
         border-bottom: 2px solid #ebbf49;
         text-align: top left;
@@ -452,7 +429,7 @@
         break-inside: avoid;
     }
 
-    tr:nth-child(even) {
+    #printArea tr:nth-child(even) {
         background-color: #fadb87;
     }
 
@@ -558,6 +535,10 @@
 </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.60/jspdf.min.js"></script>
+ <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+	
     <!-- Angular Material requires Angular.js Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
@@ -574,39 +555,38 @@
 
     <!-- Angular Material Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>    
     <!-- Angular Material style sheet -->
     <link rel="stylesheet"         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>    
-	<style>
+	
+	
+	
+       <style>
 	   .md-icon-button+.md-datepicker-input-container {
     margin-left: 12px;
     width: 79%;
 }
 md-input-container{width:100%!important}
 	   </style>
+	
+	 
 </head>
 
 <body layout="row" ng-app="StarterApp" ng-cloak ng-controller="AppCtrl">
-
+ 
  <input type='file' id="file" class="navbutton1" accept='text/plain' onchange="angular.element(this).scope().openFile(event)" hidden > 
   <div id='output' ng-model="woToLoad" hidden></div>             
     <div layout="column" class="relative" layout-fill role="main">
-       
-
-        <md-toolbar ng-show="!showSearch">
+        <md-toolbar ng-show="!showSearch" class="hide-print">
             <div class="md-toolbar-tools">
-
-                <h5>
-                    ORANGE ENERGIZING SOLUTIONS
-                </h5>
+				<h5>  ORANGE ENERGIZING SOLUTIONS </h5>
                 <span flex></span>
  
-<md-menu>
-      <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="openMenu($mdMenu, $event)">
+<md-menu class="hide-print">
+      <md-button aria-label="Open phone interactions menu" class="md-icon-button hide-print" ng-click="openMenu($mdMenu, $event)">
         <ng-md-icon icon="more_vert"></ng-md-icon>
       </md-button>
-      <md-menu-content width="4">
+      <md-menu-content width="4" class="hide-print">
 	  <md-menu-item>		
           <md-button ng-click="newWoPage($event)">
             <md-icon icon="open-file">  <ng-md-icon icon="add"></ng-md-icon> </md-icon>
@@ -621,32 +601,45 @@ md-input-container{width:100%!important}
           </md-button>
         </md-menu-item>
         <md-menu-item>		
-          <md-button ng-click="download(setFN, 'text/plain')">
+          <md-button  ng-click="showPrompt($event)">
             <md-icon icon="open-file">  <ng-md-icon icon="save"></ng-md-icon> </md-icon>
            Save File
           </md-button>
         </md-menu-item>
         
         <md-menu-divider></md-menu-divider>
-         <md-menu-item >		
-          <md-button onclick="printDiv()" ng-disabled="data.selectedIndex==0">
-            <md-icon icon="open-file">  <ng-md-icon icon="print"></ng-md-icon> </md-icon>
-           Print  
+		 <md-menu-item   >		
+          <md-button ng-click="printPrivewPage()" ng-disabled="data.selectedIndex==0" >
+            <md-icon icon="open-file">  <ng-md-icon icon="aspect_ratio"></ng-md-icon> </md-icon>
+           Print Previw
           </md-button>
         </md-menu-item>
+		
+         <md-menu-item   >		
+          <md-button ng-click="printPage()" ng-disabled="data.selectedIndex==0" >
+            <md-icon icon="open-file">  <ng-md-icon icon="print"></ng-md-icon> </md-icon>
+           Print
+          </md-button>
+        </md-menu-item>
+		 <md-menu-divider></md-menu-divider>
+         <md-menu-item >		
+          <md-button ng-click="SignInSVG()"  ng-disabled="data.selectedIndex==0">
+            <md-icon icon="open-file">  <ng-md-icon icon="edit"></ng-md-icon> </md-icon>
+					Get Signature
+          </md-button>
+        </md-menu-item>
+		
+		
+		
       </md-menu-content>
 </md-menu>
 
-
-
-
-
-            </div>
+				</div>
             <md-tabs md-stretch-tabs class="md-primary" md-selected="data.selectedIndex">
-                <md-tab id="tab1" aria-controls="tab1-content" >
-                    INVOICE
+                <md-tab id="tab1" aria-controls="tab1-content">
+                   Work-Order
                 </md-tab>
-                <md-tab id="tab2" aria-controls="tab2-content" >
+                <md-tab id="tab2" aria-controls="tab2-content">
                     PREVIEW   
                 </md-tab>
             </md-tabs>
@@ -661,20 +654,35 @@ md-input-container{width:100%!important}
                         layout-xs="column" layout="row">
                         <md-card flex-gt-sm="90" flex-gt-md="80" layout-padding>
                              
-                                <h2>Checkout</h2>
+                                <h2>REP</h2>
                                 <div class="layout-sm-column layout-row" layout-xs="column" layout="row" layout-padding>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Full Name" aria-label="primary" ng-model="userName" />
+                                        <input placeholder="Full Name" ng-change="ChangeuserName(userName)"  type="text" name="userName" id="userName" aria-label="primary" ng-model="userName" />
                                     </md-input-container>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Phone" aria-label="primary" ng-model="userPhone" />
+                                        <input placeholder="Phone" type="text"  ng-change="ChangeuserPhone(userPhone)"  aria-label="primary" ng-model="userPhone" />
                                     </md-input-container>
                                     <md-input-container flex-gt-sm="100" flex-gt-md="50">
-                                        <input placeholder="Email" aria-label="primary" ng-model="userEmail" />
+                                        <input placeholder="Email" type="email"  ng-change="ChangeuserEmail(userEmail)" aria-label="primary" ng-model="userEmail" />
                                     </md-input-container>
+
+
 
                                 </div>
                                 <!-- --------------------------------  -->
+
+
+				  <div class="info-item">
+                    <p> Sales Rep : {{ userName }}</p>
+                    <p>Rep phone: {{ userPhone }} </p>
+                    <p>Rep Email: {{ userEmail }}  </p>
+					<input type="text" id="repName" name="repName" ng-model="userName" hidden />                 
+                    
+                    <input type="text" id="repPhone" name="repPhone" style="width: 50%" placeholder="Phone" hidden /><br />
+                    <input type="text" id="repEmail" name="repEmail" style="width: 50%" placeholder="Email"   hidden />
+
+                </div>
+
  <div    >
                                     <div    layout-padding  >                                         
                                             <div  class="layout-sm-column layout-row" layout-xs="column" layout="row" layout-padding  >
@@ -685,15 +693,7 @@ md-input-container{width:100%!important}
                                                         ng-change="makeFileName()" name="busName" required />
                                                 </md-input-container>
                                                 <md-datepicker   flex-gt-sm="100" flex-gt-md="100"     ng-model="f_info.fv_date" id="wodate" name="fv_date" input-aria-labelledby="datepicker-header" md-placeholder="Date" input-aria-describedby="datepicker-description"  ></md-datepicker>
-                                               <div  >
-											   <input type="text" id="repName" name="repName" ng-model="userName"  hidden />
-                                                 <input type="text" id="repPhone" name="repPhone"  placeholder="Phone" hidden /><br />
-                                                <input type="text" id="repEmail" name="repEmail"    placeholder="Email" hidden />
-                                                 
-                                                <!-- <p> Sales Rep : {{ userName }}</p> -->
-                                                <!-- <p>Rep phone: {{ userPhone }} </p> -->
-                                                <!-- <p>Rep Email: {{ userEmail }} </p> -->
-                                                 </div>
+                                               
                                             </div>
                                           <div    layout-xs="column" layout="column"  >
                                                 <md-input-container  class="md-block" flex-gt-sm="50" flex-gt-md="100">
@@ -1015,7 +1015,7 @@ md-input-container{width:100%!important}
         <md-card flex-gt-sm="90" flex-gt-md="80">
             <md-card-content>
                
- <div  id="printArea" ng-init="getSign()" >
+ <div  id="printArea" ng-init="InitPage()" >
             <div id="caption1">
                 <div style="position:absolute;left:85%;top:2%">
 
@@ -1032,40 +1032,41 @@ md-input-container{width:100%!important}
             <!-- form and customer infor -->
             <div class="customer-info-container">
                 <div class="customer-info-item">
-                    Business Name: {{ f_info.bv_name }}
+                  <p>  Business Name: {{ f_info.bv_name }}</p>
 
                 </div>
                 <div class="customer-info-item">
-                    Date:  {{ f_info.fv_date }}
+                    <p>Date:  {{ f_info.fv_date}}</p>
+                    
+                </div>
+                <div class="customer-info-item">
+                   <p> Rep:  {{userName}}   </p>
+                   <p> Phone:  {{userPhone}}</p>  
+                   <p> Email:  {{userEmail}}</p>
+                </div>
+
+
+                <div class="customer-info-item">
+                   <p> Address:  {{ f_info.bv_address }}</p>
+                </div>
+                <div class="customer-info-item">
+                  <p>  City, State, Zip:  {{ f_info.bv_city }},  {{ f_info.bv_state }},  {{ f_info.bv_zip }}</p>
+                </div>
+                <div class="customer-info-item">
                     <br />
                 </div>
-                <div class="customer-info-item">
-                    Rep:  {{ userName }}<br />
-                    Phone:  {{ userPhone }}<br />
-                    Email:  {{ userEmail }}
-                </div>
 
 
                 <div class="customer-info-item">
-                    Address:  {{ f_info.bv_address }}
-                </div>
-                <div class="customer-info-item">
-                    City, State, Zip:  {{ f_info.bv_city }},  {{ f_info.bv_state }},  {{ f_info.bv_zip }}
-                </div>
-                <div class="customer-info-item">
-                    <br />
-                </div>
-
-
-                <div class="customer-info-item">
-                    Contact:  {{ f_info.bv_contact }}<br />
+                   <p> Contact:  {{ f_info.bv_contact }}<br />
                     Title:  {{ f_info.bv_title }}
+					</p>
                 </div>
                 <div class="customer-info-item">
-                    Phone:  {{ f_info.bv_phone }}
+                    <p>Phone:  {{ f_info.bv_phone }}</p>
                 </div>
                 <div class="customer-info-item">
-                    E-mail:  {{ f_info.bv_email }}
+                  <p>  E-mail:  {{ f_info.bv_email }}</p>
                 </div>
 
 
@@ -1073,18 +1074,19 @@ md-input-container{width:100%!important}
                 <div class="customer-info-item">
                 </div>
                 <div class="customer-info-item">
-                    Notes:  {{ f_info.fv_notes }}
+                  <p>  Notes:  {{ f_info.fv_notes }}</p>
                 </div>
 
             </div>
             <!-- ------------------------- -->
 
             <div id="lightTable" class="print-friendly">
-
-                <!--<h3 ng-if="itemQty.Light>0" style="text-align:left;"> Lights </h3>
-        -->
+             
+<br/>   
+			<h3 ng-if="itemQty.Light>0" style="text-align:left;"> Lights </h3>
+ <br/> 
                 <table ng-if="itemQty.Light>0">
-                    <caption id="caption2">Lights</caption>
+                    <!-- <caption id="caption2">Lights</caption> -->
                     <tr>
                         <th>QTY</th>
 
@@ -1126,10 +1128,13 @@ md-input-container{width:100%!important}
             </div>
             <!-- ---------------- ASH ------------------ -->
             <div id="ashTable">
-                <!--<h3 ng-if="itemQty.Ash>0" style="text-align:left;"> ASH Controls </h3>
-        -->
+        
+<br/>         
+        <h3 ng-if="itemQty.Ash>0" style="text-align:left;"> ASH Controls </h3>
+        
+<br/>   
                 <table ng-if="itemQty.Ash>0" class="print-friendly">
-                    <caption id="caption2">Ash Controls</caption>
+                    <!-- <caption id="caption2">Ash Controls</caption> -->
 
                     <tr>
                         <th>QTY</th>
@@ -1158,10 +1163,13 @@ md-input-container{width:100%!important}
             <!-- ------------------------ Curtain ---------------------------------- -->
 
             <div id="ashTable">
-                <!--<h3 ng-if="itemQty.Curtain>0"> Strip Curtains </h3>
-        -->
+                
+<br/>    
+					<h3 ng-if="itemQty.Curtain>0"> Strip Curtains </h3>
+        
+<br/> 
                 <table ng-if="itemQty.Curtain>0" class="print-friendly">
-                    <caption id="caption2">Strip Curtains</caption>
+                    <!-- <caption id="caption2">Strip Curtains</caption> -->
                     <tr>
                         <th>QTY</th>
                         <th>Width</th>
@@ -1186,10 +1194,13 @@ md-input-container{width:100%!important}
             <!-- ------------------------ NC ---------------------------------- -->
 
             <div id="ashTable">
-                <!--                <h3 ng-if="itemQty.NC>0"> Night Cover </h3>
-        -->
+        
+<br/>   
+              <h3 ng-if="itemQty.NC>0"> Night Cover </h3>
+        
+<br/>   
                 <table ng-if="itemQty.NC>0" class="print-friendly">
-                    <caption id="caption2">Night Covers</caption>
+                    <!-- <caption id="caption2">Night Covers</caption> -->
                     <tr>
                         <th>QTY</th>
                         <th>3 ft /4 ft </th>
@@ -1211,9 +1222,13 @@ md-input-container{width:100%!important}
             <!-- ------------------------ Gasket ---------------------------------- -->
 
             <div id="ashTable">
-                <!--<h3 ng-if="itemQty.Gasket>0"> Gaskets </h3>-->
-                <table ng-if="itemQty.Gasket>0" class="print-friendly">
-                    <caption id="caption2">Gaskets</caption>
+<br/>  
+                 <h3 ng-if="itemQty.Gasket>0"> Gaskets </h3>
+        
+<br/>   
+			
+			   <table ng-if="itemQty.Gasket>0" class="print-friendly">
+                    <!-- <caption id="caption2">Gaskets</caption> -->
                     <tr>
                         <th>QTY</th>
                         <th>Style</th>
@@ -1243,10 +1258,14 @@ md-input-container{width:100%!important}
             </div>
             <!-- --------------- CLOSER  ------------------- -->
             <div id="ashTable">
-                <!--<h3 ng-if="itemQty.Closer>0"> Closer </h3>
-        -->
+        
+<br/>   
+                 
+				 <h3 ng-if="itemQty.Closer>0"> Closer </h3> 
+        
+<br/>   
                 <table ng-if="itemQty.Closer>0" class="print-friendly">
-                    <caption id="caption2">Closer</caption>
+                    <!-- <caption id="caption2">Closer</caption> -->
                     <tr>
                         <th>QTY</th>
                         <th>Cooler / Freezer </th>
@@ -1267,18 +1286,21 @@ md-input-container{width:100%!important}
                 </table>
             </div>
             <!-- ---------------------------------------------------------- -->
-            <br />
+       
+<br/>   
             <h3>Total: ${{ totalWOcost }}</h3>
             <h4 style="margin:1px;">Parts and labor included.</h4>
             <br />
             <div class="customer-info-item">
-                <div id="getSign"><button onclick="getSign()">Get Signature</button></div>
-                <div class="ex1" id="signDiv"  ></div>
+               
+                <div class="ex1" id="signDiv" style="overflow: hidden;" ng-init="SignInSVG()"  >
 				 <div id="signature-pad" class="signature-pad">
 						<div class="signature-pad--body">
-						  <canvas width="664" style="touch-action: none; user-select: none;" height="187"></canvas>
+						  <canvas  style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas>
 						</div>
 				</div>
+				</div>
+
             </div>
             <div id='dec'  >
                 <p class="declair">- Please make checks payable to E.B.E USA Inc.</p>
@@ -1300,70 +1322,52 @@ md-input-container{width:100%!important}
     </ui-view>
     </md-content>
     </div>
-    <script>
+    <script> 
         var Xtext = {};
-        //------------------
-       	 
-function printDiv() {
-        var divToPrint = document.getElementById('printArea'); 
-if	(!divToPrint){return};
-         newWin= window.open(self.location.href);
-    
-       newWin.document.write("\<!DOCTYPE html\>\<html lang='es'\>\<head\>\<meta charset='utf-8'\/\>\<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'\>\<meta name='HandheldFriendly' content='true'\/\>");
-  
-        newWin.document.write("<style type='text/css'>@media print{.dataTables_info,.dataTables_filter{height:0!important;width:0!important;margin:0!important;padding:0!important;min-height:0!important;line-height:0!important;overflow:visible!important;visibility:hidden}");
-    
-        newWin.document.write("body {z-index:100!important;visibility:visible!important;position:relative!important;display:block!important;background-color:lightgray!important;height:297mm!important;width:211mm!important;position:relative!important;padding:0;top:0!important;left:0!important;margin:0!important;orphans:0!important;widows:0!important;overflow:visible!important;page-break-after:always}");
-
-
-var stv=document.getElementById('sty').innerText;
-    newWin.document.write(stv); 
-        newWin.document.write("body h1{font-size:1em; font-family:Verdana;} a.marked{color:black; text-decoration:none} .pagebreak { page-break-before: always; } ");
-        newWin.document.write("@page{size:A4; margin:2em; orphans:0!important;widows:0!important}}</style>\<\/head>\<body>");
-        newWin.document.write(divToPrint.innerHTML);
-        newWin.document.write("</body></html>");
-        newWin.focus();
-        newWin.print();
-    newWin.close();
-    }
- 
+        //------------------ 
         //---------------------
         var app = angular.module('StarterApp', ['ngMaterial', 'ngMdIcons', 'md.data.table']);
 
-        app.controller('AppCtrl', ['$scope','$rootScope',  '$mdBottomSheet', '$mdSidenav', '$mdDialog', function ($scope, $mdBottomSheet, $mdSidenav, $mdDialog) {
-             
+        app.controller('AppCtrl', ['$scope','$rootScope',  '$mdBottomSheet', '$mdSidenav', '$mdDialog', function ($scope,$rootScope, $mdBottomSheet, $mdSidenav, $mdDialog) {
+         	  function resizeCanvas() {
+				  
+				  var wrapper = document.getElementById("signature-pad");
+				  var canvas = wrapper.querySelector("canvas");
+				  var ratio =  Math.max(window.devicePixelRatio || 1, 1); 
+				  canvas.width = canvas.offsetWidth * ratio;
+				  canvas.height = canvas.offsetHeight * ratio;
+				  canvas.getContext("2d").scale(ratio, ratio);
+				  var signaturePad = new SignaturePad(canvas, {
+							backgroundColor: 'rgb(255, 255, 255)'
+							});
+				//  signaturePad.clear();
+				}
+				 $scope.SignInSVG=function(){
+				 
+						var wrapper = document.getElementById("signature-pad");
+						var svgdiv = document.getElementById("signDiv");
+						var canvas = wrapper.querySelector("canvas");
+						var signaturePad = new SignaturePad(canvas, {
+						backgroundColor: 'rgb(255, 255, 255)'
+						});
+						window.onresize = resizeCanvas;
+						resizeCanvas();
+						svgdiv.addEventListener("dblclick", function (event) {
+								  signaturePad.clear();
+								});
+				} 
+				 
 			$scope.openMenu = function($mdMenu, ev) {
 				  originatorEv = ev;
 				  $mdMenu.open(ev);
 				};
-$scope.getSign=function(){
-			console.log('sdf');
-			var wrapper = document.getElementById("signature-pad");
-			var canvas = wrapper.querySelector("canvas");
-			var signaturePad = new SignaturePad(canvas, {
-			backgroundColor: 'rgb(255, 255, 255)'
-			});
- 
-        };
-	 
-		   $scope.selected = [];
- $scope.data = {
-      selectedIndex: 0,
-      secondLocked:  true,
-      
-    };
-	$scope.selectTab=function(id){
-	 $scope.data = {
-      selectedIndex: id,
-      secondLocked:  true,
-      
-    };
-	}
+
+   		    $scope.selected = [];
+			$scope.data = {
+			selectedIndex: 0,
+			secondLocked:  true};
             $scope.options = {
-                //autoSelect: true,
                 boundaryLinks: true,
-                //largeEditDialog: true,
-                //pageSelector: true,
                 rowSelection: true
             };
 
@@ -1372,23 +1376,50 @@ $scope.getSign=function(){
                 limit: 5,
                 page: 1
             };
-      $scope.toggleSidenav = function (menuId) {
+			$scope.toggleSidenav = function (menuId) {
                 $mdSidenav(menuId).toggle();
             };
-			$scope.printPage=function(){ 
-					$scope.showSearch=true;
-					window.print();
-					//$scope.showSearch=false;
+			$scope.printPrivewPage=function(){
+				window.print();
 			}
+			$scope.printPage=function(){ 
+					 
+    var HTML_Width = 1000 ;//$("#printArea").width();
+    var HTML_Height = 2350;//$("#printArea").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+    html2canvas($("#printArea")[0]).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/jpeg", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (var i = 1; i <= totalPDFPages; i++) { 
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+        }
+        pdf.save($scope.f_info.bv_name+'_print.pdf');
+       // $("#printArea").hide();
+    });
+					
+			}
+		
+		
+		
+		
 			$scope.showSearch=false;
 			$scope.Open=function(){ 
-				document.getElementById('file').click()	 
+				document.getElementById('file').click();	 
 			}
 			
-            $scope.pageToShow = "addwo";
-            $scope.userName = "";
-            $scope.userPhone = "";
-            $scope.userEmail = "";
+            $scope.pageToShow = "";
+				$scope.userName = "";
+				$scope.userPhone = "";
+				$scope.userEmail = "";
             $scope.numOfLines = 1;
             $scope.woToLoad = [];
             $scope.filenames = [];
@@ -1396,7 +1427,12 @@ $scope.getSign=function(){
             $scope.totalWOcost = 0;
             $scope.lightOpt = ['Troffer', 'Panel', 'Canopy', 'Wrap', 'Strip', 'High-Bay', 'Shoe-Box', 'Flood', 'Wall-Pack', 'Cooler', 'Barn', 'Screw-In', 'Flash-Mount'];
 
+$scope.ChangeuserName  = function(v){$scope.userName = v;   };
+$scope.ChangeuserPhone = function(v){$scope.userPhone = v;   };
+$scope.ChangeuserEmail = function(v){$scope.userEmail = v;   };
+
             $scope.initFormCustomer = function () {
+			 
                 b_name = "";
                 f_date = "";
                 b_address = "";
@@ -1646,7 +1682,7 @@ $scope.getSign=function(){
                     }
                     return 0;
                 }
-  
+					
                     $scope.makeFileName();
                     $scope.totalWOcost = 0;
                      
@@ -1690,8 +1726,7 @@ $scope.getSign=function(){
                 $scope.numOfLines = 1; 
             };
 
-            $scope.removeLine = function (index) {
-                console.log(" remove line , index is " + index)
+            $scope.removeLine = function (index) { 
                 if ($scope.lineArr.length > 1) {
                     $scope.lineArr.splice(index, 1);
                 }
@@ -1710,7 +1745,7 @@ $scope.getSign=function(){
                     t = A[1] || "text/plain";
                 text = "";
                 text = JSON.stringify($scope.f_info);
-                console.log('before if, text is ' + text);
+              
                 if (text != "[]") {
                     console.log('text is ' + text);
                 }
@@ -1719,15 +1754,9 @@ $scope.getSign=function(){
                     text = JSON.stringify($scope.f_info);
                     console.log('text is empty ' + text);
                 }
-                console.log('name is: ' + $scope.f_info)
-                // adding customer info to text for the file
-                //for (const property in f_info) {
-                //    text += (`${property}: ${f_info[property]}`);
-                //    text += " ; ";
-                //};
+                 
                 text += "\n";
-                // adding WO lines to text for the file
-
+                 
                 temp = JSON.stringify($scope.lineArr);
                 strData = text + temp;
                 $scope.woToLoad = text + temp;
@@ -1738,13 +1767,12 @@ $scope.getSign=function(){
                 if (window.MSBlobBuilder) { // IE10
                     var bb = new MSBlobBuilder();
                     bb.append(strData);
-                    //return navigator.msSaveBlob(bb, strFileName);
-                    return navigator.msSaveBlob(bb, $scope.setFN);
-                } /* end if(window.MSBlobBuilder) */
+                     return navigator.msSaveBlob(bb, $scope.setFN);
+                }  
 
 
 
-                if ('download' in a) { //FF20, CH19
+                if ('download' in a) { 
                     a.setAttribute("download", n);
                     a.innerHTML = "downloading...";
                     D.body.appendChild(a);
@@ -1755,11 +1783,7 @@ $scope.getSign=function(){
                         D.body.removeChild(a);
                     }, 66);
                     return true;
-                }; /* end if('download' in a) */
-
-
-
-                //do iframe dataURL download: (older W3)
+                };  
                 var f = D.createElement("iframe");
                 D.body.appendChild(f);
                 f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
@@ -1767,12 +1791,31 @@ $scope.getSign=function(){
                     D.body.removeChild(f);
                 }, 333);
                 return true;
-            }; // end of writing files function
+            };  
+ $scope.showPrompt = function (ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.prompt()
+      .title('Save')
+      .textContent('Please Change File Name to Save:')
+      .placeholder('File Name')
+      .ariaLabel('File Name')
+      .initialValue($scope.setFN)
+      .targetEvent(ev)
+      .required(true)
+      .ok('Save')
+      .cancel('Close');
+
+    $mdDialog.show(confirm).then(function (result) {
+      $scope.setFN =  result;
+	  $scope.download($scope.setFN, 'text/plain');
+    }, function () {
+     // $scope.status = 'You didn\'t name your dog.';
+    });
+  };
 
             $scope.getLastLineNum = function () {
                 var lNum = 1;
                 for (line in $scope.lineArr) {
-                    //console.log("line " + line + "  " + $scope.lineArr[line].name + ' ' + $scope.lineArr[line].vuPrice * $scope.lineArr[line].idqty)
                     temp = $scope.lineArr[line].typeChs;
                     numb = temp.match(/\d/g);
                     numb = parseInt(numb.join(""));
@@ -1781,42 +1824,31 @@ $scope.getSign=function(){
                     }
                 };
                 $scope.numOfLines = parseInt(lNum) + 1;
-                console.log("numOfLine " + $scope.numOfLines)
-
+                 
             }
            
             $scope.makeFileName = function () {
                 bus_name = '';
                 rep_name = 'OES_';
-                /*                if (document.getElementById('busName')) {
-                                    bus_name = document.getElementById('busName').value;
-                                } else {
-                                    console.log('Bus_name ' + document.getElementById('busName').value);
-                                }*/
-                if ($scope.f_info.bv_name) {
+                
+				if ($scope.f_info.bv_name) {
                     bus_name = $scope.f_info.bv_name;
                 } else {
-                    console.log('f_info.bv_name ' + $scope.f_info.bv_name);
-                    adres = "";
-
+                     adres = "";
                 };
                 if ($scope.f_info.bv_address) {
                     adres = $scope.f_info.bv_address;
                 } else {
-                    console.log('f_info.bv_address ' + $scope.f_info.bv_address);
-                    adres = "";
-
+                     adres = "";
                 };
 
                 if ($scope.userName) {
-                    rep_name = $scope.userName; // document.getElementById('userName').value;
+                    rep_name = $scope.userName;  
                 }
 
 
                 if (rep_name && bus_name) {
                     bus_name = bus_name.replace(/\s/g, '_').toLowerCase();
-                    //bus_name = bus_name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
-                    //bus_name = bus_name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
                     names = rep_name.split(' '),
                         initials = names[0].substring(0, 1).toUpperCase();
 
@@ -1845,13 +1877,7 @@ $scope.getSign=function(){
 								$scope.lineArr=Xtext.lineArr;
 								$scope.getLastLineNum();
 								$scope.InitPage();
-								 
-								 $scope.data = {
-									  selectedIndex: 1,
-									  secondLocked:  true,									  
-									};
-									 
-									
+								  									 
 				}
             $scope.openFile = function (event) {
                 var input = event.target;
@@ -1860,7 +1886,7 @@ $scope.getSign=function(){
                     var text = reader.result;                     
                     Xtext = JSON.parse('{"f_info":' + text.replace('}', '},"lineArr":') + '}');				
 					FillForm(Xtext);
-					console.log(Xtext)
+				 
                 };
                 reader.readAsText(input.files[0]);
             };
@@ -1871,10 +1897,7 @@ $scope.getSign=function(){
         app.config(function ($mdThemingProvider,$mdGestureProvider) {
 		 $mdGestureProvider.skipClickHijack();
          $mdGestureProvider.setMaxClickDistance(12);
-  
-  
-  
-            var customBlueMap = $mdThemingProvider.extendPalette('light-blue', {
+         var customBlueMap = $mdThemingProvider.extendPalette('light-blue', {
                 'contrastDefaultColor': 'light',
                 'contrastDarkColors': ['50'],
                 '50': 'ffffff'
