@@ -1296,7 +1296,7 @@ md-input-container{width:100%!important}
                 <div class="ex1" id="signDiv" style="overflow: hidden;" ng-init="SignInSVG()"  >
 				 <div id="signature-pad" class="signature-pad">
 						<div class="signature-pad--body">
-						  <canvas  style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas>
+						  <canvas  id="mycanvas" style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas>
 						</div>
 				</div>
 				</div>
@@ -1380,7 +1380,15 @@ md-input-container{width:100%!important}
                 $mdSidenav(menuId).toggle();
             };
 			$scope.printPrivewPage=function(){
-				window.print();
+					$("#myimg").remove();
+					const canvas = document.getElementById('mycanvas')
+					const img    = canvas.toDataURL('image/png');
+					$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;"/>' );
+					$("#mycanvas").hide();
+						window.print();
+						
+					 $("#mycanvas").show();
+					 $("#myimg").hide();
 			}
 			$scope.printPage=function(){ 
 					 
