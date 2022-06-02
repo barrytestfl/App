@@ -258,17 +258,30 @@
         border-style: solid;
     }
 
-        #caption1 p1 {
+        #caption1 p {
             font-size: 22px;
             color: orange;
             font-weight: bold;
         }
 
-        #caption1 p2 {
+        #caption1 p {
             font-size: 22px;
             color: orangered;
         }
 
+@media screen and (max-width: 992px) {
+  #caption1 p {
+            font-size: 16px;
+             
+        }
+}
+
+@media screen and (max-width: 600px) {
+  #caption1 p {
+            font-size: 12px;
+             
+        }
+}
     #caption {
         max-height: 110px;
         width: 100%;
@@ -623,8 +636,8 @@ md-input-container{width:100%!important}
           <!-- </md-button> -->
         <!-- </md-menu-item> -->
 		 <md-menu-divider></md-menu-divider>
-         <md-menu-item >		
-          <md-button  ng-click="OpenSing($event)"  >
+         <md-menu-item   >		
+          <md-button  ng-click="SignInSVG()"  ng-disabled="data.selectedIndex==0" >
             <md-icon icon="open-file">  <ng-md-icon icon="edit"></ng-md-icon> </md-icon>
 					Get Signature
           </md-button>
@@ -1022,8 +1035,8 @@ md-input-container{width:100%!important}
 
                 </div>
                 <br />
-                <p1 style="text-align: center;">ORANGE ENERGIZING SOLUTIONS</p1>
-                <p2 style="text-align: center;">909 3rd Ave #7317,New York, NY 10150 |Phone: (718) 682-3618</p2>
+                <p style="text-align: center;">ORANGE ENERGIZING SOLUTIONS</p>
+                <p style="text-align: center;">909 3rd Ave #7317,New York, NY 10150 |Phone: (718) 682-3618</p>
                 <a HREF="http://www.oesolutions.net/">www.oesolutions.net | info@oesolutions</a>
 
 
@@ -1037,7 +1050,7 @@ md-input-container{width:100%!important}
 
                 </div>
                 <div class="customer-info-item">
-                    <p>Date:  {{ f_info.fv_date}}</p>
+                    <p>Date:  {{ showDate(f_info.fv_date)}}</p>
                     
                 </div>
                 <div class="customer-info-item">
@@ -1051,7 +1064,7 @@ md-input-container{width:100%!important}
                    <p> Address:  {{ f_info.bv_address }}</p>
                 </div>
                 <div class="customer-info-item">
-                  <p>  City, State :  {{ f_info.bv_city }},  {{ f_info.bv_state }} <br />  Zip : {{ f_info.bv_zip }}</p>
+                  <p>  City, State:Zip:  {{ f_info.bv_city }},  {{ f_info.bv_state }}  {{ f_info.bv_zip }}</p>
                 </div>
                 <div class="customer-info-item">
                     <br />
@@ -1059,8 +1072,7 @@ md-input-container{width:100%!important}
 
 
                 <div class="customer-info-item">
-                   <p> Contact:  {{ f_info.bv_contact }}
-					<br />
+                   <p> Contact:  {{ f_info.bv_contact }}<br />
                     Title:  {{ f_info.bv_title }}
 					</p>
                 </div>
@@ -1295,11 +1307,11 @@ md-input-container{width:100%!important}
             <br />
             <div class="customer-info-item">
                
-                <div class="ex1" id="signDiv" style="overflow: hidden;" init="SignInSVG()"  >
+                <div class="ex1" id="signDiv" style="overflow: hidden;" ng-init="InitSignInSVG()"  >
 				 <div id="signature-pad" class="signature-pad">
 						<div class="signature-pad--body">
-						  <!-- <canvas  id="mycanvas" style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas> -->
-						  <img ng-src="{{f_info.Signiture}}" style="display:block;width:100%;heght:100%" />
+						   <canvas  id="mycanvas" style="touch-action: none; user-select: none;width:100%;heght:100%" ></canvas>
+						  <!-- <img ng-src="{{f_info.Signiture}}" style="display:block;width:100%;heght:100%" /> -->
 						</div>
 				</div>
 				</div>
@@ -1361,13 +1373,27 @@ md-input-container{width:100%!important}
 						svgdiv.addEventListener("dblclick", function (event) {
 								  signaturePad.clear();
 								});
-				} 
+								
+								
+				}
+					 $scope.InitSignInSVG=function(){
+							 
+								if($scope.f_info.Signiture!=""){ 
+									var img=$scope.f_info.Signiture;
+									$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;display:block"/>' );
+									$("#mycanvas").hide();
+								}else{
+								$scope.SignInSVG();
+								}
+					}				
 				 
 			$scope.openMenu = function($mdMenu, ev) {
 				  originatorEv = ev;
 				  $mdMenu.open(ev);
 				};
-
+$scope.showDate=function(d){
+return $scope.f_info.fv_date?new Date($scope.f_info.fv_date).toLocaleDateString():new Date().toLocaleDateString();
+}
    		    $scope.selected = [];
 			$scope.data = {
 			selectedIndex: 0,
@@ -1387,15 +1413,17 @@ md-input-container{width:100%!important}
             };
 			function RepairSign(){
 					$("#myimg").remove();
-					const canvas = document.getElementById('mycanvas')
+					const canvas = document.getElementById('mycanvas');	
 					const img    = canvas.toDataURL('image/png');
+					$scope.f_info.Signiture=img;
 					$("#mycanvas").hide();
 					$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;display:block"/>' );
+					
 				//$("#mycanvas").show();
 					 //$("#myimg").hide();	
 			}
 			$scope.printPrivewPage=function(){
-				 
+				 RepairSign();
 					setTimeout(function(){
 					window.print();
 					},1000);
@@ -1830,6 +1858,7 @@ $scope.ChangeuserEmail = function(v){$scope.userEmail = v;   };
 
     $mdDialog.show(confirm).then(function (result) {
       $scope.setFN =  result;
+	  
 	  $scope.download($scope.setFN, 'text/plain');
     }, function () {
      // $scope.status = 'You didn\'t name your dog.';
