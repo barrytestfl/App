@@ -1379,9 +1379,14 @@ md-input-container{width:100%!important}
 					 $scope.InitSignInSVG=function(){
 							 
 								if($scope.f_info.Signiture!=""){ 
-									var img=$scope.f_info.Signiture;
-									$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;display:block"/>' );
-									$("#mycanvas").hide();
+								console.log('sign',$scope.f_info.Signiture)
+									  var img=$scope.f_info.Signiture; 
+									  $(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;display:block"/>' ); 
+									 
+									  $("#mycanvas").hide();
+									 
+									//$("#myimg").remove();
+									
 								}else{
 								$scope.SignInSVG();
 								}
@@ -1391,9 +1396,9 @@ md-input-container{width:100%!important}
 				  originatorEv = ev;
 				  $mdMenu.open(ev);
 				};
-$scope.showDate=function(d){
-return $scope.f_info.fv_date?new Date($scope.f_info.fv_date).toLocaleDateString():new Date().toLocaleDateString();
-}
+			$scope.showDate=function(d){
+			return $scope.f_info.fv_date?new Date($scope.f_info.fv_date).toLocaleDateString():new Date().toLocaleDateString();
+			}
    		    $scope.selected = [];
 			$scope.data = {
 			selectedIndex: 0,
@@ -1412,7 +1417,7 @@ return $scope.f_info.fv_date?new Date($scope.f_info.fv_date).toLocaleDateString(
                 $mdSidenav(menuId).toggle();
             };
 			function RepairSign(){
-					$("#myimg").remove();
+				//	$("#myimg").remove();
 					const canvas = document.getElementById('mycanvas');	
 					const img    = canvas.toDataURL('image/png');
 					$scope.f_info.Signiture=img;
