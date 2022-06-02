@@ -1343,7 +1343,10 @@ md-input-container{width:100%!important}
 				//  signaturePad.clear();
 				}
 				 $scope.SignInSVG=function(){
-				 
+				 $("#myimg").remove();
+				 $("#mycanvas").show();
+				 $("#mycanvas").attr('height',150);
+				 $("#mycanvas").attr('width',388);
 						var wrapper = document.getElementById("signature-pad");
 						var svgdiv = document.getElementById("signDiv");
 						var canvas = wrapper.querySelector("canvas");
@@ -1379,16 +1382,23 @@ md-input-container{width:100%!important}
 			$scope.toggleSidenav = function (menuId) {
                 $mdSidenav(menuId).toggle();
             };
-			$scope.printPrivewPage=function(){
+			function RepairSign(){
 					$("#myimg").remove();
 					const canvas = document.getElementById('mycanvas')
 					const img    = canvas.toDataURL('image/png');
-					$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;"/>' );
 					$("#mycanvas").hide();
-						window.print();
+					$(".signature-pad--body").append('<img src="'+img+'" id="myimg" style="width: 100%;display:block"/>' );
+				//$("#mycanvas").show();
+					 //$("#myimg").hide();	
+			}
+			$scope.printPrivewPage=function(){
+					RepairSign();
+					setTimeout(function(){
+					window.print();
+					},1000);
 						
-					 $("#mycanvas").show();
-					 $("#myimg").hide();
+						
+					 
 			}
 			$scope.printPage=function(){ 
 					 
